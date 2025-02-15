@@ -124,5 +124,18 @@ CREATE TABLE IF NOT EXISTS accounts (
 );
 '''
 execute_query(times)
+conversations = '''
+CREATE TABLE IF NOT EXISTS conversations (
+    rowid INTEGER PRIMARY KEY AUTOINCREMENT,
+    sessionid INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT,
+    message TEXT,
+    time INTEGER,
+    FOREIGN KEY(sessionid) REFERENCES sessions(sessionid),
+);
+'''
+
+execute_query(conversations)
+
 
 
