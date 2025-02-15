@@ -18,7 +18,7 @@ bcrypt = Bcrypt(app)
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':
-        connection = sqlite3.connect("login.db")
+        connection = sqlite3.connect("accounts.db")
         cursor = connection.cursor()
         username = request.form['username']
         password = request.form['password']
@@ -35,7 +35,7 @@ def login():
 @app.route('/signup', methods=['POST', 'GET'])
 def signup():
     if request.method == 'POST':
-        connection = sqlite3.connect("login.db")
+        connection = sqlite3.connect("accounts.db")
         cursor = connection.cursor()
         username = request.form['username']
         password = request.form['password']
@@ -52,3 +52,48 @@ def signup():
             session['username'] = username
             return redirect('/')
     return render_template('signup.js')
+
+def username_found(username):
+    try:
+        # inserts info to the user table
+        insert = "SELECT username FROM accounts WHERE username = ?"
+        conn = sqlite3.connect("accounts.db")
+        cur = conn.cursor()
+        cur.execute(insert, (username,))
+        conn.commit()
+        queryusername = cur.fetchone()[0]
+        cur.close()
+        conn.close()
+    
+        if queryusername == username:
+            # username found
+            print(f"Username Found: {queryusername}")
+            return True
+        else:
+            # username not found
+            print("Username Not Found")
+            return False
+    except: 
+        print("Username Search Failed")
+        return False
+    
+
+def execute_query(query):
+    connection = sqlite3.connect("accounts.db")
+    cursor = connection.cursor()
+    cursor.execute(query)
+    for row in cursor:
+        return ('\t'.join(str(column).replace('|', '\t') for column in row))
+    connection.close()
+
+accounts = '''
+CREATE TABLE IF NOT EXISTS accounts (
+    rowid INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT,
+    hashpassword TEXT,
+    points INTEGER,
+    courses TEXT NOT NULL,
+    major TEXT NOT NULL
+);
+'''
+execute_query(accounts)
