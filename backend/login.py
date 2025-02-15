@@ -14,8 +14,7 @@ import os
 
 app = Flask(__name__)
 app.secret_key = 'your secret key'
-def get_db_connection():
-    sqlite3.connect("accounts.db")
+
 
 
 bcrypt = Bcrypt(app)
