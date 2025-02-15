@@ -3,6 +3,9 @@ from flask import Flask, request, render_template, redirect, session
 flask-mysqldb
 import sqlite3
 from flask import Bcrypt
+from PIL import Image
+import redis
+from io import BytesIO
 
 app = Flask(__name__)
 app.secret_key = 'your secret key'
@@ -92,8 +95,11 @@ CREATE TABLE IF NOT EXISTS accounts (
     username TEXT,
     hashpassword TEXT,
     points INTEGER,
-    courses TEXT NOT NULL,
-    major TEXT NOT NULL
+    courses TEXT,
+    major TEXT
 );
 '''
 execute_query(accounts)
+
+
+
