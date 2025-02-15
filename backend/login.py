@@ -20,7 +20,7 @@ app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = 'root'
 app.config['MYSQL_DB'] = 'login'
 
-mysql = MySQL(app)
+
 bcrypt = Bcrypt(app)
 
 @app.route('/login', methods=['POST', 'GET'])
@@ -30,7 +30,7 @@ def login():
         cursor = connection.cursor()
         username = request.form['username']
         password = request.form['password']
-        cursor.execute('SELECT * FROM users WHERE username = %s', (username,))
+        cursor.execute('SELECT * FROM users WHERE username = ?', (username,))
         user = cursor.fetchone()
         cursor.close()
         if user and bcrypt.check_password_hash(user['password'], password):
@@ -49,13 +49,13 @@ def signup():
         password = request.form['password']
         courses = request.form['courses']
         major = request.form['major']
-        cursor.execute('SELECT * FROM users WHERE username = %s', (username,))
+        cursor.execute('SELECT * FROM accounts WHERE username = ?', (username,))
         user = cursor.fetchone()
         if user:
             return 'User already exists'
         else:
             hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
-            cursor.execute('INSERT INTO users (username, password, courses, major) VALUES (%s, %s, %s, %s)', (username, hashed_password, courses, major))
+            cursor.execute('INSERT INTO accounts (username, password, courses, major) VALUES (?, ?, ?, ?)', (username, hashed_password, courses, major))
             mysql.connection.commit()
             session['username'] = username
             return redirect('/')
@@ -144,7 +144,12 @@ def get_messages(user1, user2):
     return list(messages)
 
 schedule.every().sunday.at("00:00").do(reset_points)
-
+def run_scheduler():
+    while True:
+        schedule.run_pending()
+        time.sleep(60) 
+scheduler_thread = threading.Thread(target=run_scheduler, daemon=True)
+scheduler_thread.start()
 accounts = '''
 CREATE TABLE IF NOT EXISTS accounts (
     rowid INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -153,7 +158,7 @@ CREATE TABLE IF NOT EXISTS accounts (
     points INTEGER,
     courses TEXT,
     major TEXT,
-    issession INTEGER DEFAULT 0,
+    issession INTEGER DEFAULT 0
 );
 '''
 execute_query(accounts)
