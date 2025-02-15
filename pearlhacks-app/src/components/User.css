@@ -1,0 +1,19 @@
+
+.container {
+    position: absolute;
+    top: 20px;
+    left: 500px;
+    background-color: #bcbff2;
+    padding: 10px;
+    margin: 20px;
+    max-width: 60px;
+    min-width: 20px;
+    width: 200px !important;
+    box-sizing: border-box
+}
+
+.user {
+    text-align: left;
+    font-size: x-large;
+}
+
