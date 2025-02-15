@@ -1,10 +1,11 @@
-
+import flask
 from flask import Flask, request, render_template, redirect, session, Blueprint, send_file, make_response, render_template
 import schedule
 import time
 
 import sqlite3
 import string 
+import database
 from flask import Bcrypt
 from PIL import Image
 from io import BytesIO
@@ -13,11 +14,8 @@ import os
 
 app = Flask(__name__)
 app.secret_key = 'your secret key'
-
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'root'
-app.config['MYSQL_DB'] = 'login'
+def get_db_connection():
+    sqlite3.connect("accounts.db")
 
 
 bcrypt = Bcrypt(app)
@@ -55,7 +53,7 @@ def signup():
         else:
             hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
             cursor.execute('INSERT INTO accounts (username, password, courses, major) VALUES (?, ?, ?, ?)', (username, hashed_password, courses, major))
-            mysql.connection.commit()
+            connection.commit()
             session['username'] = username
             return redirect('/')
     return render_template('signup.js')
@@ -84,6 +82,7 @@ def username_found(username):
         print("Username Search Failed")
         return False
     
+
 def execute_query(query):
     connection = sqlite3.connect("accounts.db")
     cursor = connection.cursor()
@@ -142,7 +141,6 @@ def get_messages(user1, user2):
     return list(messages)
 
 schedule.every().sunday.at("00:00").do(reset_points)
-
 def run_scheduler():
     while True:
         schedule.run_pending()
@@ -191,20 +189,3 @@ cexecute_query(conversations)
 
 
 
-def insert_test_user():
-    connection = sqlite3.connect("accounts.db")
-    cursor = connection.cursor()
-    
-    username = "testuser"
-    password = "testpassword" 
-    courses = "Comp 110"
-    major = "Computer SCi"
-    
-    cursor.execute("INSERT INTO accounts (username, password, courses, major) VALUES (?, ?, ?, ?)",
-                   (username, password, courses, major))
-
-    connection.commit()
-    connection.close()
-
-insert_test_user()
-print("Test user inserted!")
