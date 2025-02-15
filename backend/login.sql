@@ -1,6 +1,6 @@
 CREATE DATABASE user_auth;
+SET GLOBAL event_scheduler = ON;
 
-USE user_auth;
 
 CREATE TABLE users (,
     username VARCHAR(30) UNIQUE NOT NULL,
@@ -9,3 +9,8 @@ CREATE TABLE users (,
     points INT NOT NULL,
     major TEXT NOT NULL
 );
+
+ON SCHEDULE EVERY 1 WEEK STARTS '2025-02-16 00:00:00'
+DO
+UPDATE users SET points = 0;
+USE user_auth;
