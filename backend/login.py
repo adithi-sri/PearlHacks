@@ -1,6 +1,6 @@
 
 from flask import Flask, request, render_template, redirect, session
-import mysql.connector
+flask-mysqldb
 from flask import Bcrypt
 
 app = Flask(__name__)
@@ -30,10 +30,13 @@ def login():
             return 'Invalid username or password'
     return render_template('login.js')
 
+@app.route('/signup', methods=['POST', 'GET'])
 def signup():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        courses = request.form['courses']
+        major = request.form['major']
         cursor = mysql.connection.cursor()
         cursor.execute('SELECT * FROM users WHERE username = %s', (username,))
         user = cursor.fetchone()
@@ -41,7 +44,7 @@ def signup():
             return 'User already exists'
         else:
             hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
-            cursor.execute('INSERT INTO users (username, password) VALUES (%s, %s)', (username, hashed_password))
+            cursor.execute('INSERT INTO users (username, password, courses, major) VALUES (%s, %s, %s, %s)', (username, hashed_password, courses, major))
             mysql.connection.commit()
             session['username'] = username
             return redirect('/')
