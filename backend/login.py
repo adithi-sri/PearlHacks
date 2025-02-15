@@ -1,5 +1,7 @@
 
 from flask import Flask, request, render_template, redirect, session
+import schedule
+import time
 flask-mysqldb
 import sqlite3
 from flask import Bcrypt
@@ -85,6 +87,16 @@ def execute_query(query):
     for row in cursor:
         return ('\t'.join(str(column).replace('|', '\t') for column in row))
     connection.close()
+
+def reset_points():
+    query = "UPDATE accounts SET points = 0"
+    connection = sqlite3.connect("accounts.db")
+    cursor = connection.cursor()
+    cursor.execute(query)
+    connection.commit()
+    connection.close()
+    
+schedule.every().sunday.at("00:00").do(reset_points)
 
 accounts = '''
 CREATE TABLE IF NOT EXISTS accounts (
