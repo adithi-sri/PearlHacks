@@ -17,10 +17,7 @@ r = redis.Redis(host='localhost', port=8022, decode_responses=True)
 
 app.secret_key = 'your secret key'
 
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'root'
-app.config['MYSQL_DB'] = 'login'
+
 
 
 @app.route('/login', methods=['POST', 'GET'])
