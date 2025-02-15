@@ -5,9 +5,9 @@ import time
 import threading
 import sqlite3
 import string 
-from flask import Bcrypt
 #from PIL import Image
 from io import BytesIO
+import hashlib
 import json
 import os
 import redis
@@ -17,24 +17,182 @@ r = redis.Redis(host='localhost', port=8022, decode_responses=True)
 
 app.secret_key = 'your secret key'
 
-@app.route('/login', methods=['POST', 'GET'])
+@app.route("/login", methods=['GET', 'POST'])
 def login():
-    if request.method == 'POST':
-        connection = sqlite3.connect("accounts.db")
-        cursor = connection.cursor()
-        username = request.form['username']
-        password = request.form['password']
-        cursor.execute('SELECT * FROM users WHERE username = ?', (username,))
-        user = cursor.fetchone()
-        cursor.close()
-        # removed encryption here. don't know what overall function was
-        if user and password:
-            session['username'] = user['username']
-            return redirect('/')
+    '''
+        Allows login with a POST request
+    '''
+    if request.method == "GET":
+        return render_template('login.j2')
+    elif request.method == "POST":
+        fields = ['mode', 'username', 'password']
+        for f in fields:
+            if f not in request.form:
+                return "ERROR"
+    
+        verb = ''
+
+        # login user
+        if request.form.get('mode') == 'login':
+            verb = 'LOGIN'
+            password = request.form.get('password')
+            username = request.form.get('username')
+            print("Logging In:", username)
+            # gets password from database and formats it into a string return
+            if validate_password(username, password) == False:
+                message = "Password Invalid. Please try again."
+                return render_template('login.j2',error=message)
+            #SETS USER TOKEN
+            cookie = uuid4()
+            r.set(f'{cookie}', f'{username}')
+
+            response = make_response(redirect('/homepage'))
+            response.set_cookie('sessiontoken', str(cookie))
+
+            return response
+            
+        elif request.form.get('mode') == 'register':
+            verb = 'REGISTER'
+            username = request.form.get('username')
+            password = request.form.get('password')
+            usernameexists = username_found(username)
+
+            print(usernameexists)
+            if len(username) < 5:
+                message = "Your username should be between 5 - 12 characters."
+                return render_template('login.j2',error=message)
+            if len(username) > 12:
+                message = "Your username should be between 5 - 12 characters."
+                return render_template('login.j2',error=message)
+            if usernameexists == False:
+                register_new_user(username, password)
+                #SETS USER TOKEN
+                cookie = uuid4()
+                r.set(f'{cookie}', f'{username}')
+                response = make_response(redirect('/homepage'))
+                response.set_cookie('sessiontoken', str(cookie))
+
+                return response
+            if usernameexists == "Account Exists" or usernameexists == True:
+                print("Server Knows Account Exists")
+                message = "This account already exists. Please login."
+                return render_template('login.j2',error=message)
+        
+            else:
+                message = "username already exists"
+                return render_template('login.j2',error=message)
+    
         else:
-            return 'Invalid username or password'
+            return "ERROR"
+
+        print(f"MODE: {verb} {request.form.get('username')} {request.form.get('password')}") 
+
     return render_template('login.js')
 
+"""
+This function adds a user to the database and takes a string of the username and 
+the password. It returns a boolean or a string that describes what happened.
+"""
+def register_new_user(username, password):
+    # establishes connection to accounts database
+    salt = str(''.join(random.choices(string.printable, k = 10)))
+    saltedpassword = password + salt
+    hashAlgo = hashlib.sha256()
+    hashAlgo.update(saltedpassword.encode())
+    hashpassword = hashAlgo.hexdigest()
+    print(f"The hashed password for {username} is {hashpassword}")
+    
+    # ensures that the username doesn't exist in the database
+    if username_found(username) == True:
+        # tells the server that the username exists
+        return "Account Exists"
+
+    # inse.rts info to the user table
+    insert = "INSERT INTO accounts (username, hashpassword, salt) VALUES(?,?,?)"
+
+    conn = sqlite3.connect("accounts.db")
+    cur = conn.cursor()
+    print(f"The salt that {username} is registering with with is {salt}")
+    cur.execute(insert, (username, hashpassword, salt))
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    if validate_password(username, password) == True:
+        print(f"user {username} registered and in the database")
+
+    return True
+
+"""
+This function looks for a username and returns a boolean
+"""
+# determines if username exists
+def username_found(username):
+    try:
+        # inserts info to the user table
+        insert = "SELECT username FROM accounts WHERE username = ?"
+        conn = sqlite3.connect("accounts.db")
+        cur = conn.cursor()
+        cur.execute(insert, (username,))
+        conn.commit()
+        queryusername = cur.fetchone()[0]
+        cur.close()
+        conn.close()
+    
+        if queryusername == username:
+            # username found
+            print(f"Username Found: {queryusername}")
+            return True
+        else:
+            # username not found
+            print("Username Not Found")
+            return False
+    except: 
+        print("Username Search Failed")
+        return False
+
+
+def validate_password(username, password):
+    #connection = sqlite3.connect("accounts.db")
+    # gets password from database and formats it into a string return
+    conn = sqlite3.connect("accounts.db")
+
+    # select and salt user password
+    querysalt = "SELECT salt FROM accounts WHERE username = ?"
+    cur = conn.cursor()
+    cur.execute(querysalt, (username,))
+    conn.commit()
+    querysalt = cur.fetchone()[0]
+    print(f"The salt that {username} is logging in with is {str(querysalt)}")
+    cur.close()
+    conn.close()
+
+    if not querysalt:
+        return False
+    
+    password += str(querysalt)
+    # hash user password
+    hashAlgo = hashlib.sha256()
+    hashAlgo.update(password.encode())
+    hashpassword = hashAlgo.hexdigest()
+    print(f"The hashpassword that {username} is logging in with is {hashpassword}")
+    conn = sqlite3.connect("accounts.db")
+    querypassword = "SELECT hashpassword FROM accounts WHERE username = ?"
+    cur = conn.cursor()
+    cur.execute(querypassword, (username,))
+    conn.commit()
+    querypassword = cur.fetchone()[0]
+    cur.close()
+    conn.close()
+
+    # compare password
+    print(f"query: {querypassword} vs hash: {hashpassword}")
+    if querypassword == hashpassword:
+        return True
+    elif querypassword != hashpassword:
+        print("Error: password is incorrect")
+        return False
+    
 @app.route('/signup', methods=['POST', 'GET'])
 def signup():
     if request.method == 'POST':
@@ -80,6 +238,18 @@ def username_found(username):
         print("Username Search Failed")
         return False
     
+def getusers():
+    # inserts info to the user table
+    insert = "SELECT username FROM accounts"
+    conn = sqlite3.connect("accounts.db")
+    cur = conn.cursor()
+    cur.execute(insert)
+    conn.commit()
+    usernames = list(cur.fetchall())
+    cur.close()
+    conn.close()
+    usernames = [item[0] for item in usernames if item[0]]
+    return usernames
 
 def execute_query(query):
     connection = sqlite3.connect("accounts.db")
@@ -149,12 +319,12 @@ scheduler_thread.start()
 accounts = '''
 CREATE TABLE IF NOT EXISTS accounts (
     rowid INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT NOT NULL,
-    hashpassword TEXT NOT NULL,
-    points INTEGER NOT NULL,
-    courses TEXT NOT NULL,
-    major TEXT NOT NULL,
-    issession INTEGER DEFAULT 0;
+    username TEXT UNIQUE,
+    hashpassword TEXT,
+    points INTEGER,
+    courses TEXT,
+    major TEXT,
+    issession INTEGER DEFAULT 0 
 );
 '''
 execute_query(accounts)
@@ -162,10 +332,10 @@ execute_query(accounts)
 times = '''
 CREATE TABLE IF NOT EXISTS accounts (
     rowid INTEGER PRIMARY KEY AUTOINCREMENT,
-    sessionid INTEGER PRIMARY KEY AUTOINCREMENT,
+    sessionid INTEGER,
     username TEXT,
     session_start INTEGER,
-    session_end INTEGER,
+    session_end INTEGER
 );
 '''
 
@@ -174,12 +344,12 @@ texecute_query(times)
 
 conversations = '''
 CREATE TABLE IF NOT EXISTS conversations (
-    rowid INTEGER PRIMARY KEY AUTOINCREMENT,
-    sessionid INTEGER PRIMARY KEY AUTOINCREMENT,
+    rowid INTEGER,
+    sessionid INTEGER,
     username TEXT,
     message TEXT,
     time INTEGER,
-    FOREIGN KEY(sessionid) REFERENCES sessions(sessionid),
+    FOREIGN KEY(sessionid) REFERENCES sessions(sessionid)
 );
 '''
 
@@ -188,7 +358,7 @@ cexecute_query(conversations)
 
 
 def insert_test_user():
-    connection = sqlite3.connect("test_accounts.db")
+    connection = sqlite3.connect("accounts.db")
     cursor = connection.cursor()
     
     username = "testuser"
@@ -196,11 +366,19 @@ def insert_test_user():
     courses = "CS101, MATH200"
     major = "Computer Science"
     
-    cursor.execute("INSERT INTO accounts (username, password, courses, major) VALUES (?, ?, ?, ?)",
+    cursor.execute("INSERT INTO accounts (username, hashpassword, courses, major) VALUES (?, ?, ?, ?)",
                    (username, password, courses, major))
+    
+    print(getusers())
 
     connection.commit()
     connection.close()
 
-insert_test_user()
+print(getusers())
 print("Test user inserted!")
+
+@app.route("/results", methods=['GET'])
+def results():
+    return send_file("results.html")
+
+app.run(host="0.0.0.0", port=8022, debug=True)
