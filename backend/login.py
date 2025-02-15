@@ -2,25 +2,24 @@
 from flask import Flask, request, render_template, redirect, session, Blueprint, send_file, make_response, render_template
 import schedule
 import time
-
+import threading
 import sqlite3
 import string 
-from flask import Bcrypt
-from PIL import Image
+#from PIL import Image
 from io import BytesIO
 import json
 import os
+import redis
 
 app = Flask(__name__)
-app.secret_key = 'your secret key'
+r = redis.Redis(host='localhost', port=8022, decode_responses=True)
 
+app.secret_key = 'your secret key'
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = 'root'
 app.config['MYSQL_DB'] = 'login'
 
-
-bcrypt = Bcrypt(app)
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
@@ -32,7 +31,8 @@ def login():
         cursor.execute('SELECT * FROM users WHERE username = ?', (username,))
         user = cursor.fetchone()
         cursor.close()
-        if user and bcrypt.check_password_hash(user['password'], password):
+        # removed encryption here. don't know what overall function was
+        if user and password:
             session['username'] = user['username']
             return redirect('/')
         else:
@@ -53,9 +53,8 @@ def signup():
         if user:
             return 'User already exists'
         else:
-            hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
-            cursor.execute('INSERT INTO accounts (username, password, courses, major) VALUES (?, ?, ?, ?)', (username, hashed_password, courses, major))
-            mysql.connection.commit()
+            cursor.execute('INSERT INTO accounts (username, password, courses, major) VALUES (?, ?, ?, ?)', (username, password, courses, major))
+            cursor.commit()
             session['username'] = username
             return redirect('/')
     return render_template('signup.js')
@@ -149,15 +148,16 @@ def run_scheduler():
         time.sleep(60) 
 scheduler_thread = threading.Thread(target=run_scheduler, daemon=True)
 scheduler_thread.start()
+
 accounts = '''
 CREATE TABLE IF NOT EXISTS accounts (
     rowid INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT,
-    hashpassword TEXT,
-    points INTEGER,
-    courses TEXT,
-    major TEXT,
-    issession INTEGER DEFAULT 0
+    username TEXT NOT NULL,,
+    hashpassword TEXT NOT NULL,,
+    points INTEGER NOT NULL,,
+    courses TEXT NOT NULL,,
+    major TEXT NOT NULL,,
+    issession INTEGER DEFAULT 0;
 );
 '''
 execute_query(accounts)
