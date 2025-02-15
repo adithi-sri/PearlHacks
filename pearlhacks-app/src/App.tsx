@@ -1,7 +1,7 @@
-import Message from './Message';
 import Login from "./login";
 
 function App() {
+  <Message></Message>
   return <Login></Login>;
 }
 
