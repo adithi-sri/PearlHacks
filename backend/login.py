@@ -35,11 +35,12 @@ def login():
 @app.route('/signup', methods=['POST', 'GET'])
 def signup():
     if request.method == 'POST':
+        connection = sqlite3.connect("login.db")
+        cursor = connection.cursor()
         username = request.form['username']
         password = request.form['password']
         courses = request.form['courses']
         major = request.form['major']
-        cursor = mysql.connection.cursor()
         cursor.execute('SELECT * FROM users WHERE username = %s', (username,))
         user = cursor.fetchone()
         if user:
