@@ -2,7 +2,7 @@
 from flask import Flask, request, render_template, redirect, session, Blueprint, send_file, make_response, render_template
 import schedule
 import time
-flask-mysqldb
+
 import sqlite3
 import string 
 import database
