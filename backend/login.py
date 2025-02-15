@@ -6,7 +6,7 @@ import threading
 import sqlite3
 import string 
 from flask import Bcrypt
-from PIL import Image
+#from PIL import Image
 from io import BytesIO
 import json
 import os
@@ -16,9 +16,6 @@ app = Flask(__name__)
 r = redis.Redis(host='localhost', port=8022, decode_responses=True)
 
 app.secret_key = 'your secret key'
-
-
-
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
@@ -152,11 +149,11 @@ scheduler_thread.start()
 accounts = '''
 CREATE TABLE IF NOT EXISTS accounts (
     rowid INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT NOT NULL,,
-    hashpassword TEXT NOT NULL,,
-    points INTEGER NOT NULL,,
-    courses TEXT NOT NULL,,
-    major TEXT NOT NULL,,
+    username TEXT NOT NULL,
+    hashpassword TEXT NOT NULL,
+    points INTEGER NOT NULL,
+    courses TEXT NOT NULL,
+    major TEXT NOT NULL,
     issession INTEGER DEFAULT 0;
 );
 '''
@@ -190,4 +187,20 @@ CREATE TABLE IF NOT EXISTS conversations (
 cexecute_query(conversations)
 
 
+def insert_test_user():
+    connection = sqlite3.connect("test_accounts.db")
+    cursor = connection.cursor()
+    
+    username = "testuser"
+    password = "testpassword"  # Normally, you'd hash this
+    courses = "CS101, MATH200"
+    major = "Computer Science"
+    
+    cursor.execute("INSERT INTO accounts (username, password, courses, major) VALUES (?, ?, ?, ?)",
+                   (username, password, courses, major))
 
+    connection.commit()
+    connection.close()
+
+insert_test_user()
+print("Test user inserted!")
