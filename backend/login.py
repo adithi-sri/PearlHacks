@@ -91,6 +91,22 @@ def execute_query(query):
         return ('\t'.join(str(column).replace('|', '\t') for column in row))
     connection.close()
 
+def texecute_query(query):
+    connection = sqlite3.connect("times.db")
+    cursor = connection.cursor()
+    cursor.execute(query)
+    for row in cursor:
+        return ('\t'.join(str(column).replace('|', '\t') for column in row))
+    connection.close()
+
+def cexecute_query(query):
+    connection = sqlite3.connect("conversations.db")
+    cursor = connection.cursor()
+    cursor.execute(query)
+    for row in cursor:
+        return ('\t'.join(str(column).replace('|', '\t') for column in row))
+    connection.close()
+
 def reset_points():
     query = "UPDATE accounts SET points = 0"
     connection = sqlite3.connect("accounts.db")
@@ -99,6 +115,31 @@ def reset_points():
     connection.commit()
     connection.close()
     
+def get_messages(user1, user2):
+    # inserts info to the user table
+    print(f"ATTEMPTING TO GET MESSAGES FROM CONVERSATION #")
+    insert = "SELECT * FROM conversations WHERE (conversationid = ?)"
+    conn = sqlite3.connect("conversations.db")
+    cur = conn.cursor()
+    cur.execute(insert, (user1, user2, user2, user1))
+    conn.commit()
+    messages = cur.fetchall()
+    cur.close()
+    conn.close()
+    if messages == None:
+        conn = sqlite3.connect("conversations.db")
+        cur = conn.cursor()
+        # Conversation doesn't exist, insert a new row
+        insert = "INSERT INTO conversations (user1, user2, messages) VALUES(?,?,?)"
+        cur.execute(insert, (user1, user2, ""))
+        conn.commit()
+        messages = ""
+        cur.close()
+        conn.close()
+
+    # should be a tuple
+    return list(messages)
+
 schedule.every().sunday.at("00:00").do(reset_points)
 
 accounts = '''
@@ -123,7 +164,10 @@ CREATE TABLE IF NOT EXISTS accounts (
     session_end INTEGER,
 );
 '''
-execute_query(times)
+
+#seperate function to avoid cursor errors - don't know why but was giving an error otherwise
+texecute_query(times)
+
 conversations = '''
 CREATE TABLE IF NOT EXISTS conversations (
     rowid INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -135,7 +179,8 @@ CREATE TABLE IF NOT EXISTS conversations (
 );
 '''
 
-execute_query(conversations)
+#seperate function to avoid cursor errors
+cexecute_query(conversations)
 
 
 
