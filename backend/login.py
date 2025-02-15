@@ -108,10 +108,21 @@ CREATE TABLE IF NOT EXISTS accounts (
     hashpassword TEXT,
     points INTEGER,
     courses TEXT,
-    major TEXT
+    major TEXT,
+    issession INTEGER DEFAULT 0,
 );
 '''
 execute_query(accounts)
 
+times = '''
+CREATE TABLE IF NOT EXISTS accounts (
+    rowid INTEGER PRIMARY KEY AUTOINCREMENT,
+    sessionid INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT,
+    session_start INTEGER,
+    session_end INTEGER,
+);
+'''
+execute_query(times)
 
 
