@@ -1,7 +1,7 @@
 
 from flask import Flask, request, render_template, redirect, session
 flask-mysqldb
-import mysql.connector
+import sqlite3
 from flask import Bcrypt
 
 app = Flask(__name__)
