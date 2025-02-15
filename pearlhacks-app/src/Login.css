@@ -1,0 +1,45 @@
+.title {
+    text-align: center;
+    font-size: 24px;
+    font-family: Georgia, sans-serif;
+    margin-bottom: 20px;
+    color: #f5f2f0;
+  }
+
+body {
+    background-color: #8f8fb4;  
+    font-family: Calibri; 
+    margin: 0;  
+    padding: 0;  
+  }
+.Login {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #d2c98a;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color:aliceblue;
+  }
+.Login input[type="name"],
+.Login input[type="password"] {
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  font-family: Calibri;
+}
+.Login input[type="submit"] {
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    background-color: #ebbac2;
+    margin-top: 10px;
+    color:#f5f2f0;
+    font-family: Calibri;
+  }
