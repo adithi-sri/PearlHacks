@@ -1,9 +1,11 @@
 {
 	"folders": [
 		{
+			"name": "PearlHacks",
 			"path": "."
 		},
 		{
+			"name": "pearlhacks-app",
 			"path": "../../pearlhacks-app"
 		}
 	],
