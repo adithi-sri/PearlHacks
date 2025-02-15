@@ -2,7 +2,7 @@
 from flask import Flask, request, render_template, redirect, session
 import schedule
 import time
-flask-mysqldb
+
 import sqlite3
 from flask import Bcrypt
 from PIL import Image
