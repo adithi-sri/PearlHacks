@@ -18,9 +18,10 @@ bcrypt = Bcrypt(app)
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':
+        connection = sqlite3.connect("login.db")
+        cursor = connection.cursor()
         username = request.form['username']
         password = request.form['password']
-        cursor = mysql.connection.cursor()
         cursor.execute('SELECT * FROM users WHERE username = %s', (username,))
         user = cursor.fetchone()
         cursor.close()
