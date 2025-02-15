@@ -1,7 +1,8 @@
 import Message from './Message';
+import Login from './Login';
 
 function App() {
-  return <div><Message></Message></div>;
+  return <Login></Login>;
 }
 
 export default App;
