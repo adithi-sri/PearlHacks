@@ -28,6 +28,21 @@ def login():
             return redirect('/')
         else:
             return 'Invalid username or password'
-    return render_template('login.html')
+    return render_template('login.js')
 
-
+def signup():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        cursor = mysql.connection.cursor()
+        cursor.execute('SELECT * FROM users WHERE username = %s', (username,))
+        user = cursor.fetchone()
+        if user:
+            return 'User already exists'
+        else:
+            hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+            cursor.execute('INSERT INTO users (username, password) VALUES (%s, %s)', (username, hashed_password))
+            mysql.connection.commit()
+            session['username'] = username
+            return redirect('/')
+    return render_template('signup.js')
