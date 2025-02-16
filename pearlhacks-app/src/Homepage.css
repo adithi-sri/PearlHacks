@@ -2,6 +2,16 @@ body {
     background-color: rgb(249, 249, 249);
 }
 
+.courses {
+    position: fixed;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    list-style-type: none;
+    font-size:20px;
+    top:125px;
+    left:450px;
+
+}
+
 .tim-heading {
     position: fixed;
     font-size: 30px;
@@ -19,4 +29,13 @@ body {
     font-weight:bold;
     top:22px;
     font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+.course-head {
+    position:fixed;
+    font-family:Georgia, 'Times New Roman', Times, serif;
+    font-size:28px;
+    left:480px;
+    top:80px;
+    color:rgb(250, 182, 194);
 }

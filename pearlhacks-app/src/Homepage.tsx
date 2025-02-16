@@ -7,16 +7,21 @@ import Register from "./components/Register";
 import "./App.css";
 import Timer from "./components/Timer";
 import "./Homepage.css";
-import Chatbox from "./components/Chatbox";
 
 function Homepage() {
+  const items = ["COMP 110", "COMP 283", "LFIT 59", "RELI 073H", "JAPN 162"];
   return (
     <div>
       <h1 className="home-page">Homepage</h1>
+      <h1 className="course-head">Courses:</h1>
+      <ul className="courses">
+        {items.map((item) => (
+          <li key={item}>{item}</li>
+        ))}
+      </ul>
       <h1 className="tim-heading">Study Timer</h1>
       <Timer></Timer>
       <Leaderboard />
-      <Chatbox></Chatbox>
       <User></User>
     </div>
   );
