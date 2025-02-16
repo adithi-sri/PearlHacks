@@ -1,6 +1,6 @@
 
 body{
-    position: sticky;
+    align-items: top;
 }
 
 .stopwatch{
@@ -29,7 +29,7 @@ body{
 
 .controls button{
     font-size: 1.5rem;
-    font-weight: bold;
+    font-family: Georgia, 'Times New Roman', Times, serif';
     padding: 10px 20px;
     margin: 5px;
     min-width: 125px;
@@ -41,7 +41,7 @@ body{
 }
 
 .start-button{
-    background-color: green;
+    background-color: #EBBAC2;
 
 }
 
@@ -50,7 +50,7 @@ body{
 }
 
 .stop-button{
-    background-color: red;
+    background-color: #f4c362;
 }
 
 .stop-button:hover{
@@ -58,7 +58,7 @@ body{
 }
 
 .reset-button{
-    background-color: blue;
+    background-color: #9ca6c8;
 }
 
 .reset-button:hover{
