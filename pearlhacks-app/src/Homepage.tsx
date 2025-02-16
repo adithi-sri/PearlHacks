@@ -11,6 +11,7 @@ import "./Homepage.css";
 function Homepage() {
   return (
     <div>
+      <h1 className="home-page">Homepage</h1>
       <h1 className="tim-heading">Study Timer</h1>
       <Timer></Timer>
       <Leaderboard />

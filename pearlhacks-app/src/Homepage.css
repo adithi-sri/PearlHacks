@@ -11,3 +11,12 @@ body {
     bottom:382px;
     color:#858FB4;
 }
+
+.home-page {
+    position:fixed;
+    left:480px;
+    color:#858FB4;
+    font-weight:bold;
+    top:22px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
