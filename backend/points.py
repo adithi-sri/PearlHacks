@@ -1,10 +1,26 @@
+from flask import Flask, jsonify
 import time
 import sqlite3
 import redis 
+import json
 
+app = Flask(__name__)
 r = redis.Redis(host='localhost', port=8022, decode_responses=True)
 
 # start study session
+def get_leaderboards():
+    query = "SELECT username, points FROM accounts ORDER BY points DESC LIMIT 9"
+    conn = sqlite3.connect("accounts.db")
+    cursor = conn.cursor()
+    cursor.execute(query)
+    top_users = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return top_users
+@app.route('/leaderboard', methods=['GET'])
+def points():
+    top_users = get_leaderboards()
+    return jsonify(top_users)
 
 def start_study_session(username):
     conn_times = sqlite3.connect("times.db")

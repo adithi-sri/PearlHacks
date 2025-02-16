@@ -1,6 +1,13 @@
 import "./Leaderboard.css";
+import React, { useEffect, useState } from "react";
 
+interface User {
+  name: string;
+  points: number;
+}
 function Leaderboard() {
+  const[users, setUsers] = useState<User[]>([]);
+  const [error, setError] = useState('');
   const items = [
     "1st Place - Jane Smith",
     "2nd Place - George Washington",
