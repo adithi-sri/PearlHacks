@@ -1,16 +1,16 @@
-import React from "react";
+import React, {useState} from "react";
+import "./login.css";
 
 function Login() {
     return (
         <>
-            <p className="title">Registration Form</p>
+            <p className="title">Login or Register</p>
 
-            <form className="App">
-                <input type="text" />
-                <input type="email" />
-                <input type="password" />
-                <input type={"submit"}
-                    style={{ backgroundColor: "#a1eafb" }} />
+            <form className="Login">
+                <input type="name" placeholder = "name" />
+                <input type="password" placeholder = "password"/>
+                <input type="submit" value="Log In"/>
+                <input type="submit" value="Sign Up"/>
             </form>
         </>
     );
