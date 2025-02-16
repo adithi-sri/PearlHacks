@@ -11,8 +11,21 @@
 }
 
 .user {
+    font-weight: bold;
     font-family:Georgia, 'Times New Roman', Times, serif;
     text-align: center;
     font-size: x-large;
+}
+
+.writingstyles {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    text-align: center;
+}
+
+.ranking {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    text-align: center;
+    font-size: x-large;
+    color:#ef9fad;
 }
 
