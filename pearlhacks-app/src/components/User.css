@@ -1,19 +1,18 @@
 
-.container {
+.profile-container {
     position: absolute;
-    top: 20px;
-    left: 500px;
-    background-color: #bcbff2;
+    top: 30px;
+    left: 50px;
+    width: 400px;
+    height: 700px;
     padding: 10px;
-    margin: 20px;
-    max-width: 60px;
-    min-width: 20px;
-    width: 200px !important;
-    box-sizing: border-box
+    border-radius: 12px;
+    background-color: #dfe8fb;
 }
 
 .user {
-    text-align: left;
+    font-family:Georgia, 'Times New Roman', Times, serif;
+    text-align: center;
     font-size: x-large;
 }
 
