@@ -322,7 +322,7 @@ CREATE TABLE IF NOT EXISTS accounts (
     rowid INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT,
     hashpassword TEXT,
-    points INTEGER,
+    points INTEGER DEFAULT 0,
     courses TEXT,
     major TEXT,
     issession INTEGER DEFAULT 0,
@@ -359,6 +359,8 @@ CREATE TABLE IF NOT EXISTS conversations (
 cexecute_query(conversations)
 
 register_new_user("honey", '212')
+register_new_user("billy", '212')
+register_new_user("molly", '212')
 
 def test_study_sessions():
     # 1. Test setup - Register some users (you might need to create them in the DB first or ensure they're added beforehand)

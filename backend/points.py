@@ -89,7 +89,7 @@ def update_points(username):
     # Get the session duration in minutes
     duration = get_session_duration(username)
     
-    if duration > 0:
+    if duration >= 0:
         # Example points system: 5 points for every 10 minutes of study
         points_earned = (duration // 10) * 5
         
