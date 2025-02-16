@@ -65,7 +65,6 @@ def get_session_duration(username):
     LIMIT 1;
     """, (username,))
     session_start = cursor.fetchone()[0]  # Extract the session_start value from the tuple
-    print("Session Start:", session_start)
 
     # Fetch the most recent session end time for the user
     cursor.execute("""
@@ -77,14 +76,12 @@ def get_session_duration(username):
     """, (username,))
 
     session_end = cursor.fetchone()[0]  # Extract the session_end value from the tuple
-    print("Session End:", session_end)
 
  
     if session_start and session_end:
         if session_end != 0:  # Ensure session_end is populated
             duration = int(session_end) - int(session_start)  # Duration in seconds
             duration_minutes = round(duration // 1)  # Convert to minutes
-            print(f"Session duration for {username} is {duration_minutes} minutes.")
             return duration_minutes  # Return duration in minutes (or seconds if preferred)
         else:
             print(f"Session for {username} is still ongoing.")
@@ -112,12 +109,10 @@ def update_points(username):
         current_points = cursor.fetchone()
         
         if current_points:
-            print(f"current points is {current_points}")
             current_points = current_points[0]
             new_points = current_points + points_earned
             cursor.execute("UPDATE accounts SET points = ? WHERE username = ?", (new_points, username))
             conn.commit()
-            print(f"{username} earned {points_earned} points. Total points: {new_points}")
         else:
             print(f"User {username} not found.")
         
@@ -147,4 +142,5 @@ def get_top_9_users():
 
     # Return the list of top 9 users with their points
     return top_users
+
 

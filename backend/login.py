@@ -1,6 +1,6 @@
 import flask
 from flask import Flask, request, render_template, redirect, session, Blueprint, send_file, make_response, render_template
-import schedule
+#import schedule
 import time
 import threading
 import sqlite3
@@ -102,7 +102,6 @@ def register_new_user(username, password):
     hashAlgo = hashlib.sha256()
     hashAlgo.update(saltedpassword.encode())
     hashpassword = hashAlgo.hexdigest()
-    print(f"The hashed password for {username} is {hashpassword}")
     
     # ensures that the username doesn't exist in the database
     if username_found(username) == True:
@@ -114,7 +113,6 @@ def register_new_user(username, password):
 
     conn = sqlite3.connect("accounts.db")
     cur = conn.cursor()
-    print(f"The salt that {username} is registering with with is {salt}")
     cur.execute(insert, (username, hashpassword, salt))
     conn.commit()
     cur.close()
@@ -143,14 +141,11 @@ def username_found(username):
     
         if queryusername == username:
             # username found
-            print(f"Username Found: {queryusername}")
             return True
         else:
             # username not found
-            print("Username Not Found")
             return False
     except: 
-        print("Username Search Failed")
         return False
 
 
@@ -164,7 +159,6 @@ def validate_password(username, password):
     cur.execute(querysalt, (username,))
     conn.commit()
     querysalt = cur.fetchone()[0]
-    print(f"The salt that {username} is logging in with is {str(querysalt)}")
     cur.close()
     conn.close()
 
@@ -176,7 +170,6 @@ def validate_password(username, password):
     hashAlgo = hashlib.sha256()
     hashAlgo.update(password.encode())
     hashpassword = hashAlgo.hexdigest()
-    print(f"The hashpassword that {username} is logging in with is {hashpassword}")
     conn = sqlite3.connect("accounts.db")
     querypassword = "SELECT hashpassword FROM accounts WHERE username = ?"
     cur = conn.cursor()
@@ -187,57 +180,12 @@ def validate_password(username, password):
     conn.close()
 
     # compare password
-    print(f"query: {querypassword} vs hash: {hashpassword}")
     if querypassword == hashpassword:
         return True
     elif querypassword != hashpassword:
         print("Error: password is incorrect")
         return False
-    
-@app.route('/signup', methods=['POST', 'GET'])
-def signup():
-    if request.method == 'POST':
-        connection = sqlite3.connect("accounts.db")
-        cursor = connection.cursor()
-        username = request.form['username']
-        password = request.form['password']
-        courses = request.form['courses']
-        major = request.form['major']
-        cursor.execute('SELECT * FROM accounts WHERE username = ?', (username,))
-        user = cursor.fetchone()
-        if user:
-            return 'User already exists'
-        else:
-            hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
-            cursor.execute('INSERT INTO accounts (username, password, courses, major) VALUES (?, ?, ?, ?)', (username, hashed_password, courses, major))
-            mysql.connection.commit()
-            session['username'] = username
-            return redirect('/')
-    return render_template('signup.js')
 
-def username_found(username):
-    try:
-        # inserts info to the user table
-        insert = "SELECT username FROM accounts WHERE username = ?"
-        conn = sqlite3.connect("accounts.db")
-        cur = conn.cursor()
-        cur.execute(insert, (username,))
-        conn.commit()
-        queryusername = cur.fetchone()[0]
-        cur.close()
-        conn.close()
-    
-        if queryusername == username:
-            # username found
-            print(f"Username Found: {queryusername}")
-            return True
-        else:
-            # username not found
-            print("Username Not Found")
-            return False
-    except: 
-        print("Username Search Failed")
-        return False
     
 def getusers():
     # inserts info to the user table
@@ -309,11 +257,12 @@ def get_messages(user1, user2):
     # should be a tuple
     return list(messages)
 
-schedule.every().sunday.at("00:00").do(reset_points)
+#schedule.every().sunday.at("00:00").do(reset_points)
 def run_scheduler():
     while True:
-        schedule.run_pending()
+        #schedule.run_pending()
         time.sleep(60) 
+
 scheduler_thread = threading.Thread(target=run_scheduler, daemon=True)
 scheduler_thread.start()
 
@@ -360,20 +309,19 @@ cexecute_query(conversations)
 
 register_new_user("molly", "slkdsjaf")
 register_new_user("billy", "slkdsjaf")
-register_new_user("willy", "slkdsjaf")
+register_new_user("honey", "slkdsjaf")
 
 
 def test_study_sessions():
     # 1. Test setup - Register some users (you might need to create them in the DB first or ensure they're added beforehand)
     # You should already have a way to add test users in your database
-    test_users = ["billy", "molly", "honey"]
+    test_users = ["billy", "molly", "willy"]
     
     # 2. Test the start and end study sessions
     for username in test_users:
         points.start_study_session(username)
         timeint = random.randint(0,10)
-        sleep = time.sleep(timeint)
-        print(f"user: {username} expected_sleep {str(timeint)}")
+        time.sleep(timeint)
         points.end_study_session(username)
     
     # 3. Test points update
@@ -385,6 +333,21 @@ def test_study_sessions():
     top_users = points.get_top_9_users()
     for i, user in enumerate(top_users, 1):
         print(f"{i}. {user[0]} - {user[1]} points")
+
+def toggle_session(username):
+    conn = sqlite3.connect("accounts.db")
+    cursor = conn.cursor()
+
+    cursor.execute('SELECT issession FROM accounts WHERE username = ?', (username,))
+    is_session = cursor.fetchone()[0]
+
+    if is_session == 1:
+        points.end_study_session(username)
+    else:
+        points.start_study_session(username)
+
+    conn.close()
+
 
 # Run the test
 test_study_sessions()
