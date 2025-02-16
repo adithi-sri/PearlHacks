@@ -29,7 +29,7 @@ body{
 
 .controls button{
     font-size: 1.5rem;
-    font-family: Georgia, 'Times New Roman', Times, serif';
+    font-family: 'Georgia', 'Times New Roman', 'Times', 'serif';
     padding: 10px 20px;
     margin: 5px;
     min-width: 125px;

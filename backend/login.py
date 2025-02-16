@@ -348,6 +348,27 @@ def toggle_session(username):
 
     conn.close()
 
+@app.route("/start_session", methods=['POST'])
+def start_session():
+    username = request.form.get('username')
+    if username:
+        points.start_study_session(username)
+        return {"status": "success", "message": "Study session started."}, 200
+    return {"status": "error", "message": "Username is required."}, 400
+
+@app.route("/end_session", methods=['POST'])
+def end_session():
+    username = request.form.get('username')
+    if username:
+        points.end_study_session(username)
+        points.update_points(username)
+        return {"status": "success", "message": "Study session ended and points updated."}, 200
+    return {"status": "error", "message": "Username is required."}, 400
+
+@app.route("/get_top_users", methods=['GET'])
+def get_top_users():
+    top_users = points.get_top_9_users()
+    return {"status": "success", "top_users": top_users}, 200
 
 # Run the test
 test_study_sessions()

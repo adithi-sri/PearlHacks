@@ -6,6 +6,7 @@ function Timer() {
   const [elapsedTime, setElapsedTime] = useState<number>(0);
   const intervalIdRef = useRef<NodeJS.Timeout | null>(null);
   const startTimeRef = useRef<number>(0);
+  const username = "your_username"; // Replace with the actual username
 
   useEffect(() => {
     if (isRunning) {
@@ -24,10 +25,40 @@ function Timer() {
   function start() {
     setIsRunning(true);
     startTimeRef.current = Date.now() - elapsedTime;
+    fetch("/start_session", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: `username=${username}`
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === "success") {
+        console.log(data.message);
+      } else {
+        console.error(data.message);
+      }
+    });
   }
 
   function stop() {
     setIsRunning(false);
+    fetch("/end_session", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: `username=${username}`
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === "success") {
+        console.log(data.message);
+      } else {
+        console.error(data.message);
+      }
+    });
   }
 
   function reset() {
