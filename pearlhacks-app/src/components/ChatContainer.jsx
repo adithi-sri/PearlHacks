@@ -27,6 +27,7 @@ const ChatContainer = () => {
 
   const addMessage = (chat) => {
     const newChat = {
+      ...chat,
       username: localStorage.getItem("user"),
       message: chat,
       avatar: localStorage.getItem("avatar"),
