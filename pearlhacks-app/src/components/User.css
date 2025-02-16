@@ -29,3 +29,32 @@
     color:#ef9fad;
 }
 
+.chat {
+    position: fixed;
+    left:215px;
+    margin:10px;
+    font-size:large;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    background-color:#e9bfc6;
+    border-radius: 7px;
+    
+}
+
+
+.search {
+    position: fixed;
+    left:127px;
+    margin: 55px;
+    font-size:large;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    background-color:#e9bfc6;
+    border-radius: 7px;
+}
+
+.search:hover {
+    opacity:70%;
+}
+
+.chat:hover {
+    opacity:70%;
+}

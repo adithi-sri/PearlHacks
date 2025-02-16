@@ -10,6 +10,8 @@ function User() {
         anyone nearby is taking similar classes, please reach out!{" "}
       </p>
       <h3 className="ranking">Leaderboard Ranking: 3rd</h3>
+      <button className="chat">Chat</button>
+      <button className="search">Search students</button>
     </div>
   );
 }
