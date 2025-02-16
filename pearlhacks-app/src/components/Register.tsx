@@ -5,7 +5,7 @@ import "./register.css";
 function Register() {
     const navigate = useNavigate();
     const handleSignUpClick = () => {
-        navigate('/leaderboard');
+        navigate('/homepage');
       };
     return (
         <>
