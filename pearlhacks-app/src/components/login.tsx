@@ -1,17 +1,24 @@
 import React, {useState} from "react";
-import "./login.css";
+import { useNavigate} from "react-router-dom";
+import "./Login.css";
 
 function Login() {
+    const navigate = useNavigate();
+
+    const handleSignUpClick = () => {
+        navigate("/register");
+    };
     return (
         <>
             <p className="title">Login or Register</p>
 
             <form className="Login">
-                <input type="name" placeholder = "name" />
+                <input type="text" placeholder = "name" />
                 <input type="password" placeholder = "password"/>
-                <input type="submit" value="Log In"/>
-                <input type="submit" value="Sign Up"/>
+                <button type="submit" >Login</button>
+                <button type="submit" onClick={handleSignUpClick}>Sign Up</button>
             </form>
+
         </>
     );
 }
