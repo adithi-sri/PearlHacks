@@ -65,6 +65,17 @@
     font-family:Georgia;
     margin: 10px;
     font-weight:bold;
-    top:325px;
+    top:360px;
     left:150px;
+}
+
+.week-hours {
+    position:fixed;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    text-align: center;
+    font-size: large;
+    list-style-type: none;
+    top:400px;
+    left:115px;
+
 }
