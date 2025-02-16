@@ -1,8 +1,13 @@
-import Login from "./login";
+import Leaderboard from "./components/Leaderboard";
+import User from "./components/User";
 
 function App() {
-  <Message></Message>
-  return <Login></Login>;
+  return (
+    <div>
+      <User />
+      <Leaderboard />
+    </div>
+  );
 }
 
 export default App;
