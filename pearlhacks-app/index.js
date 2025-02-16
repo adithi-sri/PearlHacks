@@ -14,7 +14,6 @@ const io = new Server(httpServer, {
 
 app.use(cors());
 
-
 // When a new client connects
 io.on('connection', (socket) => {
   console.log(`A user connected with ID: ${socket.id}`);
