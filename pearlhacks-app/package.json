@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview",
-    "start": "node index.js"
+    "preview": "vite preview"
+
   },
   "dependencies": {
     "cors": "^2.8.5",
