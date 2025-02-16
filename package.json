@@ -1,12 +1,9 @@
 {
   "dependencies": {
-<<<<<<< HEAD
     "bcrypt": "^5.1.1",
-=======
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@mui/material": "^6.4.4",
->>>>>>> 34f8606 (hello)
     "bootstrap": "^5.2.3",
     "react-hook-form": "^7.54.2"
   }
