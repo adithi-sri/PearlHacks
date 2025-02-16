@@ -1,3 +1,7 @@
+body {
+    background-color: rgb(249, 249, 249);
+}
+
 .tim-heading {
     position: fixed;
     font-size: 30px;

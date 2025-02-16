@@ -12,6 +12,7 @@ function User() {
       <h3 className="ranking">Leaderboard Ranking: 3rd</h3>
       <button className="chat">Chat</button>
       <button className="search">Search students</button>
+      <h1 className="week-progress">Weekly Progress</h1>
     </div>
   );
 }
