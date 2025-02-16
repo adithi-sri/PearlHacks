@@ -19,6 +19,7 @@ r = redis.Redis(host='localhost', port=8022, decode_responses=True)
 
 app.secret_key = 'your secret key'
 
+
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     '''
@@ -95,7 +96,11 @@ def login():
 This function adds a user to the database and takes a string of the username and 
 the password. It returns a boolean or a string that describes what happened.
 """
+@app.route("/register", methods=['GET', 'POST'])
 def register_new_user(username, password):
+    data = request.get_json()
+    username = data['username']
+    password = data['password']
     # establishes connection to accounts database
     salt = str(''.join(random.choices(string.printable, k = 10)))
     saltedpassword = password + salt
