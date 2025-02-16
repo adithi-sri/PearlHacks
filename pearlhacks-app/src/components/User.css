@@ -58,3 +58,13 @@
 .chat:hover {
     opacity:70%;
 }
+
+.week-progress {
+    position:fixed;
+    font-size:20px;
+    font-family:Georgia;
+    margin: 10px;
+    font-weight:bold;
+    top:325px;
+    left:150px;
+}
