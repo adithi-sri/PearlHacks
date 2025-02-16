@@ -1,0 +1,9 @@
+.tim-heading {
+    position: fixed;
+    font-size: 30px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-weight:bold;
+    left:490px;
+    bottom:382px;
+    color:#858FB4;
+}
