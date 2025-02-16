@@ -8,6 +8,9 @@ function Login() {
     const handleSignUpClick = () => {
         navigate("/register");
     };
+    const handleLogInClick = () => {
+        navigate("/homepage");
+    }
     return (
         <>
             <p className="title">Login or Register</p>
@@ -15,7 +18,7 @@ function Login() {
             <form className="Login">
                 <input type="text" placeholder = "name" />
                 <input type="password" placeholder = "password"/>
-                <button type="submit" >Login</button>
+                <button type="submit" onClick={handleLogInClick}>Login</button>
                 <button type="submit" onClick={handleSignUpClick}>Sign Up</button>
             </form>
 
