@@ -11,6 +11,7 @@ import hashlib
 import json
 import os
 import redis
+import random
 
 app = Flask(__name__)
 r = redis.Redis(host='localhost', port=8022, decode_responses=True)
@@ -156,7 +157,6 @@ def validate_password(username, password):
     #connection = sqlite3.connect("accounts.db")
     # gets password from database and formats it into a string return
     conn = sqlite3.connect("accounts.db")
-
     # select and salt user password
     querysalt = "SELECT salt FROM accounts WHERE username = ?"
     cur = conn.cursor()
@@ -319,12 +319,13 @@ scheduler_thread.start()
 accounts = '''
 CREATE TABLE IF NOT EXISTS accounts (
     rowid INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT UNIQUE,
+    username TEXT,
     hashpassword TEXT,
     points INTEGER,
     courses TEXT,
     major TEXT,
-    issession INTEGER DEFAULT 0 
+    issession INTEGER DEFAULT 0,
+    salt TEXT
 );
 '''
 execute_query(accounts)
@@ -361,24 +362,17 @@ def insert_test_user():
     connection = sqlite3.connect("accounts.db")
     cursor = connection.cursor()
     
-    username = "testuser"
+    username = "littleuser"
     password = "testpassword"  # Normally, you'd hash this
     courses = "CS101, MATH200"
     major = "Computer Science"
     
     cursor.execute("INSERT INTO accounts (username, hashpassword, courses, major) VALUES (?, ?, ?, ?)",
                    (username, password, courses, major))
-    
-    print(getusers())
-
     connection.commit()
     connection.close()
 
-print(getusers())
-print("Test user inserted!")
 
-@app.route("/results", methods=['GET'])
-def results():
-    return send_file("results.html")
+print("Test user inserted!")
 
 app.run(host="0.0.0.0", port=8022, debug=True)
