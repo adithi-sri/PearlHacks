@@ -7,6 +7,7 @@ import Register from "./components/Register";
 import "./App.css";
 import Timer from "./components/Timer";
 import "./Homepage.css";
+import Chatbox from "./components/Chatbox";
 
 function Homepage() {
   return (
@@ -15,6 +16,7 @@ function Homepage() {
       <h1 className="tim-heading">Study Timer</h1>
       <Timer></Timer>
       <Leaderboard />
+      <Chatbox></Chatbox>
       <User></User>
     </div>
   );
