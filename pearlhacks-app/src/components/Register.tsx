@@ -1,7 +1,12 @@
 import React from "react";
+import { useNavigate } from 'react-router-dom';
 import "./register.css";
 
 function Register() {
+    const navigate = useNavigate();
+    const handleSignUpClick = () => {
+        navigate('/leaderboard');
+      };
     return (
         <>
             <p className="title">Enter your information!</p>
@@ -15,7 +20,7 @@ function Register() {
                 <input type="text" id = "course4" placeholder = "Enter a course code. Ex: COMP 210"/>
                 <input type="text" id = "course5" placeholder = "Enter a course code. Ex: COMP 210"/>
                 <input type="text" id = "course6" placeholder = "Enter a course code. Ex: COMP 210"/>
-                <input type="submit" id = "register" value="Register"/>
+                <button type="submit" onClick={handleSignUpClick} >Register</button>
             </form>
         </>
     );
