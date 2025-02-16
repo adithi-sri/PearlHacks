@@ -32,10 +32,13 @@ def end_study_session(username):
     cursor = conn_endtimes.cursor()
 
     session_end = int(time.time())  # Current time in epoch format
+    cursor.execute("""
+    UPDATE times 
+    SET session_end = ? 
+    WHERE username = ? AND session_end IS NULL
+    """, (session_end, username))
 
-    cursor.execute("INSERT OR REPLACE INTO times (username, session_end) VALUES (?, ?)", (username, session_end))
 
-    
     conn_endtimes.commit()
     conn_endtimes.close()
 
