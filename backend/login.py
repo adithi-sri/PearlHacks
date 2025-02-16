@@ -358,9 +358,10 @@ CREATE TABLE IF NOT EXISTS conversations (
 #seperate function to avoid cursor errors
 cexecute_query(conversations)
 
-register_new_user("honey", '212')
-register_new_user("billy", '212')
-register_new_user("molly", '212')
+register_new_user("molly", "slkdsjaf")
+register_new_user("billy", "slkdsjaf")
+register_new_user("willy", "slkdsjaf")
+
 
 def test_study_sessions():
     # 1. Test setup - Register some users (you might need to create them in the DB first or ensure they're added beforehand)
@@ -370,7 +371,9 @@ def test_study_sessions():
     # 2. Test the start and end study sessions
     for username in test_users:
         points.start_study_session(username)
-        time.sleep(1)  # Simulate study time
+        timeint = random.randint(0,10)
+        sleep = time.sleep(timeint)
+        print(f"user: {username} expected_sleep {str(timeint)}")
         points.end_study_session(username)
     
     # 3. Test points update
