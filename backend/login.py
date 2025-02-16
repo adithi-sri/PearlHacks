@@ -12,6 +12,7 @@ import json
 import os
 import redis
 import random
+import points
 
 app = Flask(__name__)
 r = redis.Redis(host='localhost', port=8022, decode_responses=True)
@@ -331,7 +332,7 @@ CREATE TABLE IF NOT EXISTS accounts (
 execute_query(accounts)
 
 times = '''
-CREATE TABLE IF NOT EXISTS accounts (
+CREATE TABLE IF NOT EXISTS times (
     rowid INTEGER PRIMARY KEY AUTOINCREMENT,
     sessionid INTEGER,
     username TEXT,
@@ -357,22 +358,30 @@ CREATE TABLE IF NOT EXISTS conversations (
 #seperate function to avoid cursor errors
 cexecute_query(conversations)
 
+register_new_user("honey", '212')
 
-def insert_test_user():
-    connection = sqlite3.connect("accounts.db")
-    cursor = connection.cursor()
+def test_study_sessions():
+    # 1. Test setup - Register some users (you might need to create them in the DB first or ensure they're added beforehand)
+    # You should already have a way to add test users in your database
+    test_users = ["billy", "molly", "honey"]
     
-    username = "littleuser"
-    password = "testpassword"  # Normally, you'd hash this
-    courses = "CS101, MATH200"
-    major = "Computer Science"
+    # 2. Test the start and end study sessions
+    for username in test_users:
+        points.start_study_session(username)
+        time.sleep(1)  # Simulate study time
+        points.end_study_session(username)
     
-    cursor.execute("INSERT INTO accounts (username, hashpassword, courses, major) VALUES (?, ?, ?, ?)",
-                   (username, password, courses, major))
-    connection.commit()
-    connection.close()
+    # 3. Test points update
+    for username in test_users:
+        points.update_points(username)
 
+    # 4. Get the top 9 users based on points
+    print("Top 9 Users by Points:")
+    top_users = points.get_top_9_users()
+    for i, user in enumerate(top_users, 1):
+        print(f"{i}. {user[0]} - {user[1]} points")
 
-print("Test user inserted!")
+# Run the test
+test_study_sessions()
 
 app.run(host="0.0.0.0", port=8022, debug=True)
