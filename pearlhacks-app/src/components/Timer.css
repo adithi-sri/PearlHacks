@@ -19,14 +19,11 @@ body{
 }
 
 .display{
-    width: 400px;
-    padding-right: 10px;
-    padding-left: 10px;
-    margin-left:10px;
     align-items: center;
     font-size: 4.5rem;
     font-family:Georgia, 'Times New Roman', Times, serif;
     font-weight: bold;
+    width: 485px;
     color:#858FB4;
 }
 
